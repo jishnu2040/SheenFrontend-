@@ -3,11 +3,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { setUserId } from '../../Redux/slices/partnerSlice';
 
 const VerifyCode = () => {
   const [code, setCode] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setCode(e.target.value);
@@ -15,15 +18,18 @@ const VerifyCode = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await axios.post('http://localhost:8000/api/v1/auth/verify-email/', { otp: code });
-      const { message, user_type } = response.data; // Assuming your API returns 'user_type' in the response
-      
+      const { message, user_type, user_id } = response.data; // Assuming your API returns 'user_type' and 'user_id' in the response
+
       if (response.status === 200) {
         toast.success(message);
         setErrors({});
         
+        // Dispatch the user ID to Redux store
+        dispatch(setUserId(user_id));
+
         setTimeout(() => {
           if (user_type === 'partner') {
             navigate('/partner-details'); // Navigate to partner details page
@@ -38,10 +44,10 @@ const VerifyCode = () => {
       }
     } catch (error) {
       console.error('Verification error:', error);
-      
+
       if (error.response) {
         const { data, status } = error.response;
-        
+
         if (status === 400) {
           toast.error(data.error || 'OTP has expired');
         } else if (status === 404) {
@@ -49,7 +55,7 @@ const VerifyCode = () => {
         } else {
           toast.error('An error occurred. Please try again.');
         }
-        
+
         setErrors(data);
       } else if (error.request) {
         toast.error('No response from the server. Please try again.');
@@ -58,7 +64,6 @@ const VerifyCode = () => {
       }
     }
   };
-  
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">

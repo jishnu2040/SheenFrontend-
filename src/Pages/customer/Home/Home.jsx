@@ -1,6 +1,6 @@
 import React from 'react'
-import MainHeader from '../../components/Header/MainHeader'
-import Search from '../../components/Search/Search'
+import MainHeader from '../../../components/customer/Header/MainHeader'
+import Search from '../../../components/customer/Search/Search'
 
 function Home() {
   return (

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { setBusinessName, setWebsiteName } from '../../Redux/slices/partnerSlice';
 
-const PartnerDetails = () => {
+const BasicInfo = () => {
+  const userId = useSelector((state) => state.partner.userId);
+  const dispatch = useDispatch();
+  
   const [partnerData, setPartnerData] = useState({
     business_name: '',
     website: '',
@@ -20,36 +24,27 @@ const PartnerDetails = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/auth/partner-details/', partnerData);
-      const { message } = response.data;
+    // Dispatch the business name and website name to Redux store
+    dispatch(setBusinessName(partnerData.business_name));
+    dispatch(setWebsiteName(partnerData.website));
 
-      if (response.status === 201) {
-        toast.success(message);
-        setErrors({});
-        setTimeout(() => {
-          navigate('/verify'); // Redirect to email verification page
-        }, 1000);
-      }
-    } catch (error) {
-      console.error('Error adding partner details:', error);
-      if (error.response && error.response.data) {
-        setErrors(error.response.data);
-        toast.error(error.response.data.message || 'An error occurred. Please try again.');
-      } else if (error.request) {
-        toast.error('No response from the server. Please try again.');
-      } else {
-        toast.error('An error occurred. Please try again.');
-      }
-    }
+    toast.success('Partner details saved successfully');
+    setErrors({});
+
+    setTimeout(() => {
+      navigate('/services'); // Navigate to the services component
+    }, 1000);
   };
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+        <div>
+          <h2>User ID from Redux: {userId}</h2>
+        </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Partner Details</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -90,4 +85,4 @@ const PartnerDetails = () => {
   );
 };
 
-export default PartnerDetails;
+export default BasicInfo;

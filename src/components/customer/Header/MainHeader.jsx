@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import img from './../../assets/Sheen.png';
-import axiosInstance from '../../utlils/axiosinstance';
+import img from'../../../assets/Sheen.png';
+import axiosInstance from '../../../utlils/axiosinstance';
 import { toast } from 'react-toastify';
 
 function MainHeader() {

@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const partnerSlice = createSlice({
-  name: 'partner',
+  name: 'partner',// state identifier 
   initialState,
   reducers: {
     setUserId: (state, action) => {
