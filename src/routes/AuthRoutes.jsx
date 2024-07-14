@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Signup, Login, ForgetPassword, VerifyCode, ResetPassword } from '../Pages/auth';
 
+
 const AuthRoutes = () => {
   return (
     <Routes>

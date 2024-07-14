@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchServiceTypes, setServiceType } from '../../Redux/slices/partnerSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Services = () => {
-  // Dummy object for service categories
-  const serviceCategories = [
-    { id: 1, label: 'Haircut & Styling' },
-    { id: 2, label: 'Makeup' },
-    { id: 3, label: 'Massage' },
-    { id: 4, label: 'Tattoo' },
-    { id: 5, label: 'Facial & Skincare' },
-    { id: 6, label: 'Spa' },
-    { id: 7, label: 'Other+' },
-  ];
+  const dispatch = useDispatch();
+  const serviceCategories = useSelector(state => state.partner.serviceCategories);
+  const selectedServices = useSelector(state => state.partner.serviceType);
+  const status = useSelector(state => state.partner.status);
+  const error = useSelector(state => state.partner.error);
 
-  // State to track selected services
-  const [selectedServices, setSelectedServices] = useState([]);
+  const navigate = useNavigate(); 
 
-  // Function to handle service selection
+  useEffect(() => {
+    dispatch(fetchServiceTypes());
+  }, [dispatch]);
+
   const handleServiceSelect = (serviceId) => {
     if (selectedServices.includes(serviceId)) {
-      setSelectedServices(selectedServices.filter(id => id !== serviceId));
+      dispatch(setServiceType(selectedServices.filter(id => id !== serviceId)));
     } else {
-      setSelectedServices([...selectedServices, serviceId]);
+      dispatch(setServiceType([...selectedServices, serviceId]));
     }
   };
 
-  // Function to submit selected services (dummy implementation)
   const handleSubmit = () => {
-    const selectedServiceLabels = selectedServices.map(id => serviceCategories.find(service => service.id === id).label);
+    const selectedServiceLabels = selectedServices.map(id => serviceCategories.find(service => service.id === id).name);
     console.log('Selected Services:', selectedServiceLabels);
     // Handle submission logic here (e.g., dispatch to Redux, API call)
     alert('Services submitted!'); // Replace with actual logic
+
+    setTimeout(() => {
+      navigate('/teamSize'); 
+    }, 1000);
   };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -46,7 +57,7 @@ const Services = () => {
                   checked={selectedServices.includes(service.id)}
                   onChange={() => handleServiceSelect(service.id)}
                 />
-                <span className="ml-2">{service.label}</span>
+                <span className="ml-2">{service.name}</span>
               </label>
             </div>
           ))}
