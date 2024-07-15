@@ -1,5 +1,5 @@
 import axios from "axios";
-import {jwtDecode }from "jwt-decode";
+import { jwtDecode }from "jwt-decode";
 import dayjs from "dayjs";
 
 const baseUrl = "http://localhost:8000/api/v1";
@@ -8,7 +8,8 @@ const axiosInstance = axios.create({
   baseURL: baseUrl,
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': localStorage.getItem('access') ? `Bearer ${JSON.parse(localStorage.getItem('access'))}` : null
+    'Authorization': localStorage.getItem('access') ? `Bearer ${localStorage.getItem('access')}` : null
+  
   }
 });
 

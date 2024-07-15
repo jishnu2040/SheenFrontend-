@@ -28,6 +28,8 @@ const Login = () => {
         "email": response.data.email,
         "name": response.data.full_name
       };
+      const user_type = response.data.user_type;
+
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("access", JSON.stringify(response.data.access_token));
@@ -35,9 +37,19 @@ const Login = () => {
         toast.success("Login successful");
         setErrors({});
 
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1000);
+        if (user_type === 'partner') {
+          setTimeout(() => {
+            navigate('/partner/dashboard');
+          }, 1000);
+        }
+        else {
+          setTimeout(() => {
+            navigate('/');
+          }, 1000);
+       }
+        
+
+        
       } else {
         toast.error("Login failed. Please check your credentials.");
         setErrors({});
